@@ -1,21 +1,42 @@
-﻿namespace Calculator
+﻿using System;
+using System.Collections.Generic;
+
+namespace Calculator
 {
     public class PolishNotationCalculator : IPolishNotationCalculator
     {
         public double Calculate(string expression)
         {
-            var tokens = expression.Split(' ');
-            if (tokens.Length != 3)
-                throw new ArgumentException("Invalid expression format");
+            var tokens = expression.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var stack = new Stack<double>();
 
-            return tokens[0] switch
+            for (int i = tokens.Length - 1; i >= 0; i--)
             {
-                "+" => double.Parse(tokens[1]) + double.Parse(tokens[2]),
-                "-" => double.Parse(tokens[1]) - double.Parse(tokens[2]),
-                "*" => double.Parse(tokens[1]) * double.Parse(tokens[2]),
-                "/" => double.Parse(tokens[1]) / double.Parse(tokens[2]),
-                _ => throw new ArgumentException($"Unknown operator: {tokens[0]}")
-            };
+                if (double.TryParse(tokens[i], out var num))
+                {
+                    stack.Push(num);
+                }
+                else
+                {
+                    var a = stack.Pop();
+                    var b = stack.Pop();
+                    stack.Push(ApplyOperator(tokens[i], a, b));
+                }
+            }
+
+            if (stack.Count != 1)
+                throw new ArgumentException("Invalid expression");
+
+            return stack.Pop();
         }
+
+        private double ApplyOperator(string op, double a, double b) => op switch
+        {
+            "+" => a + b,
+            "-" => a - b,
+            "*" => a * b,
+            "/" => a / b,
+            _ => throw new ArgumentException($"Unknown operator: {op}")
+        };
     }
 }
