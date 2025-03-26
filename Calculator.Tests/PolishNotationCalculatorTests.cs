@@ -20,5 +20,16 @@ namespace Calculator.Tests
             var result = _calculator.Calculate(input);
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData("+ + 1 2 3", 6)]     // (1 + 2) + 3
+        [InlineData("+ * 1 2 3", 5)]     // (1 * 2) + 3
+        [InlineData("- / 10 2 1", 4)]    // (10 / 2) - 1
+        public void GIVEN_three_operands_WHEN_calculate_THEN_return_result(
+    string input, double expected)
+        {
+            var result = _calculator.Calculate(input);
+            Assert.Equal(expected, result);
+        }
     }
 }
