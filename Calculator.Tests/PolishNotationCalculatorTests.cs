@@ -3,14 +3,22 @@ using Calculator;
 
 namespace Calculator.Tests
 {
+
     public class PolishNotationCalculatorTests
     {
-        [Fact]
-        public void GIVEN_simple_addition_WHEN_calculate_THEN_return_sum()
+        private readonly IPolishNotationCalculator _calculator
+            = new PolishNotationCalculator();
+
+        [Theory]
+        [InlineData("+ 1 2", 3)]
+        [InlineData("- 5 2", 3)]
+        [InlineData("* 3 4", 12)]
+        [InlineData("/ 10 2", 5)]
+        public void GIVEN_two_operands_WHEN_calculate_THEN_return_result(
+            string input, double expected)
         {
-            var calculator = new PolishNotationCalculator();
-            var result = calculator.Calculate("+ 1 2");
-            Assert.Equal(3, result);
+            var result = _calculator.Calculate(input);
+            Assert.Equal(expected, result);
         }
     }
 }
