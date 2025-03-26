@@ -1,41 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Calculator
+﻿namespace Calculator
 {
-    public class PolishNotationCalculator
+    public class PolishNotationCalculator : IPolishNotationCalculator
     {
         public double Calculate(string expression)
         {
-            var tokens = expression.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var stack = new Stack<double>();
+            var tokens = expression.Split(' ');
+            if (tokens.Length != 3)
+                throw new ArgumentException("Invalid expression format");
 
-            for (int i = tokens.Length - 1; i >= 0; i--)
+            return tokens[0] switch
             {
-                if (double.TryParse(tokens[i], out var num))
-                {
-                    stack.Push(num);
-                }
-                else
-                {
-                    var a = stack.Pop();
-                    var b = stack.Pop();
-                    stack.Push(ApplyOperator(tokens[i], a, b));
-                }
-            }
-
-            return stack.Pop();
-        }
-
-        private double ApplyOperator(string op, double a, double b)
-        {
-            return op switch
-            {
-                "+" => a + b,
-                "-" => a - b,
-                "*" => a * b,
-                "/" => b != 0 ? a / b : throw new DivideByZeroException(),
-                _ => throw new ArgumentException($"Unknown operator: {op}")
+                "+" => double.Parse(tokens[1]) + double.Parse(tokens[2]),
+                "-" => double.Parse(tokens[1]) - double.Parse(tokens[2]),
+                "*" => double.Parse(tokens[1]) * double.Parse(tokens[2]),
+                "/" => double.Parse(tokens[1]) / double.Parse(tokens[2]),
+                _ => throw new ArgumentException($"Unknown operator: {tokens[0]}")
             };
         }
     }
