@@ -31,5 +31,16 @@ namespace Calculator.Tests
             var result = _calculator.Calculate(input);
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData("+ (* 1 2) 3", 5)]    // Скобки как часть токена
+        [InlineData("+ (1) (2)", 3)]      // Одиночные числа в скобках
+        public void GIVEN_expressions_with_parentheses_WHEN_calculate_THEN_ignore_them(
+    string input, double expected)
+        {
+            var cleaned = input.Replace("(", "").Replace(")", "");
+            var result = _calculator.Calculate(cleaned);
+            Assert.Equal(expected, result);
+        }
     }
 }
